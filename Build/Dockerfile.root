@@ -1,0 +1,6 @@
+FROM composer:2.1.6
+RUN apk add git openssh rsync npm
+COPY build.sh /root/
+VOLUME /app
+WORKDIR /root
+ENTRYPOINT . ./build.sh
