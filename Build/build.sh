@@ -1,29 +1,45 @@
 #!/bin/sh
 GIT_SRC=$HOME/src
 GIT_DEST=/app/publish
-mkdir -p $GIT_DEST/public
+BUILD_STATUS=/app/status
+STATUS_STARTED=$BUILD_STATUS/started
+STATUS_READY=$BUILD_STATUS/ready
+STATUS_LIVE=$BUILD_STATUS/live
+STATUS_DEPLOYED=$BUILD_STATUS/deployed
+
+mkdir -p $GIT_DEST/public $BUILD_STATUS
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/ssh-config/known_hosts -i /ssh-config/id_file"
 runbuild() {
-  git pull origin $GIT_BRANCH
-  if [ -e "composer.json" ]
-  then 
-    echo "Running Composer..."
-    [ $# == 1 ] && $1 && composer dumpautoload
-    composer install
-  else
-    echo "Skipping Composer..."
-  fi
-  if [ -e "package.json" ] 
+  git pull origin $GIT_BRANCH && touch $STATUS_STARTED
+  if [ ! -e $STATUS_DEPLOYED ] || [ $(cat $STATUS_DEPLOYED) != $(git rev-parse HEAD) ]
   then
-    echo "Running NPM..."
-    npm install
-    npm run prod
+    echo "Starting build..."
+    if [ -e "composer.json" ]
+    then 
+      echo "Running Composer..."
+      [ $# == 1 ] && $1 && composer dumpautoload
+      composer install
+    else
+      echo "Skipping Composer..."
+    fi
+    if [ -e "package.json" ] 
+    then
+      echo "Running NPM..."
+      npm install
+      npm run prod
+    else
+      echo "Skipping NPM..."
+    fi
+    echo "Syncing files..."
+    rsync -a --exclude='.git' . $GIT_DEST && \
+      echo -n $(git rev-parse HEAD) > $STATUS_DEPLOYED
+    echo "Files synced..."
   else
-    echo "Skipping NPM..."
+    echo "Skipping build..."
   fi
-  rsync -a --exclude='.git' . $GIT_DEST
-  #rsync --exclude='.git' . $GIT_DEST
+  touch $STATUS_READY $STATUS_LIVE
 }
+
 if [ ! -d "$GIT_SRC" ] 
 then
   echo "Cloning..."
