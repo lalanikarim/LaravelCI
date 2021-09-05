@@ -53,5 +53,5 @@ do
     echo "Remote not updated. Skipping..."
   fi
   echo "sleeping..."
-  sleep 10
+  sleep $SLEEP_DURATION
 done
