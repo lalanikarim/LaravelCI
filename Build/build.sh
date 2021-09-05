@@ -1,7 +1,8 @@
 #!/bin/sh
 GIT_SRC=$HOME/src
-GIT_DEST=/app
-export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/known_hosts -i /id_file"
+GIT_DEST=/app/publish
+mkdir -p $GIT_DEST/public
+export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/ssh-config/known_hosts -i /ssh-config/id_file"
 runbuild() {
   git pull origin $GIT_BRANCH
   if [ -e "composer.json" ]
@@ -20,7 +21,8 @@ runbuild() {
   else
     echo "Skipping NPM..."
   fi
-  rsync -a -v --exclude='.git' . $GIT_DEST
+  rsync -a --exclude='.git' . $GIT_DEST
+  #rsync --exclude='.git' . $GIT_DEST
 }
 if [ ! -d "$GIT_SRC" ] 
 then
