@@ -19,6 +19,13 @@ runbuild() {
       echo "Running Composer..."
       [ $# == 1 ] && $1 && composer dumpautoload
       composer install
+      if [[ ! -z "${POST_COMPOSER_COMMANDS}" ]]
+      then
+        echo "Running Post Composer Commands..."
+        $POST_COMPOSER_COMMANDS
+      else
+        echo "No Post Composer Commands..."
+      fi
     else
       echo "Skipping Composer..."
     fi
