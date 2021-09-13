@@ -56,14 +56,18 @@ else
 fi
 cd $GIT_SRC
 git fetch origin
-if [ `git rev-parse --verify $GIT_BRANCH` ] 
-then
-  echo "Remote branch exists locally..."
-  git checkout $GIT_BRANCH
-else
-  echo "Checking out remote branch..."
-  git checkout -b $GIT_BRANCH origin/$GIT_BRANCH
-fi
+#if [ `git rev-parse --verify $GIT_BRANCH` ] 
+#then
+#  echo "Remote branch exists locally..."
+#  git checkout $GIT_BRANCH
+#else
+#  echo "Checking out remote branch..."
+#  git checkout -b $GIT_BRANCH origin/$GIT_BRANCH
+#fi
+
+echo "Switching to remote branch..."
+git switch $GIT_BRANCH
+
 runbuild
 while true
 do
