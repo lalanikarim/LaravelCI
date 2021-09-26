@@ -1,5 +1,6 @@
 FROM php:7-alpine3.14
 RUN apk add git openssh rsync npm bash
+RUN apk add composer
 RUN deluser xfs
 RUN addgroup -g 33 nonroot
 RUN adduser --home /home/nonroot --uid 33 -G nonroot \
