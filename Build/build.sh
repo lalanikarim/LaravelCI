@@ -19,6 +19,7 @@ runbuild() {
       echo "Running Composer..."
       [ $# == 1 ] && $1 && composer dumpautoload
       composer install
+      composer update
       if [[ ! -z "${POST_COMPOSER_COMMANDS}" ]]
       then
         echo "Running Post Composer Commands..."
@@ -33,6 +34,7 @@ runbuild() {
     then
       echo "Running NPM..."
       npm install
+      npm update
       npm run prod
     else
       echo "Skipping NPM..."
