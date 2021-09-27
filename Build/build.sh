@@ -43,6 +43,13 @@ runbuild() {
     rsync -a --exclude='.git' . $GIT_DEST && \
       echo -n $(git rev-parse HEAD) > $STATUS_DEPLOYED
     echo "Files synced..."
+    if [[ ! -z "${POST_SYNC_COMMANDS}" ]]
+    then
+      echo "Running Post Sync Commands..."
+      $POST_SYNC_COMMANDS
+    else
+      echo "No Post Sync Commands..."
+    fi
   else
     echo "Skipping build..."
   fi
