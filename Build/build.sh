@@ -34,7 +34,7 @@ runbuild() {
     then
       echo "Running NPM..."
       npm install
-      npm update
+      #npm update
       npm run prod
     else
       echo "Skipping NPM..."
