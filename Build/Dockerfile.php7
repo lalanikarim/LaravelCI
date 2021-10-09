@@ -1,4 +1,4 @@
-FROM php:7-alpine3.14
+FROM docker.io/php:7-alpine3.14
 RUN apk add git openssh rsync npm bash
 RUN apk add composer
 RUN deluser xfs
