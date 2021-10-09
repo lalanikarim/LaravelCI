@@ -10,6 +10,12 @@ STATUS_DEPLOYED=$BUILD_STATUS/deployed
 mkdir -p $GIT_DEST/public $BUILD_STATUS
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/ssh-config/known_hosts -i /ssh-config/id_file"
 runbuild() {
+  if [[ ! -z "${RESET_REV_COUNT}" ]]
+  then
+    git reset HEAD~$RESET_REV_COUNT
+    git clean -fd
+    git checkout -- .
+  fi
   git pull origin $GIT_BRANCH && touch $STATUS_STARTED
   if [ ! -e $STATUS_DEPLOYED ] || [ $(cat $STATUS_DEPLOYED) != $(git rev-parse HEAD) ]
   then
@@ -55,6 +61,8 @@ else
   echo "Existing clone..."
 fi
 cd $GIT_SRC
+
+
 git fetch origin
 #if [ `git rev-parse --verify $GIT_BRANCH` ] 
 #then
