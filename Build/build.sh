@@ -25,6 +25,7 @@ runbuild() {
       echo "Running Composer..."
       [ $# == 1 ] && $1 && composer dumpautoload
       composer install
+      composer update
       if [[ ! -z "${POST_COMPOSER_COMMANDS}" ]]
       then
         echo "Running Post Composer Commands..."
@@ -39,6 +40,7 @@ runbuild() {
     then
       echo "Running NPM..."
       npm install
+      #npm update
       npm run prod
     else
       echo "Skipping NPM..."
@@ -47,6 +49,13 @@ runbuild() {
     rsync -a --exclude='.git' . $GIT_DEST && \
       echo -n $(git rev-parse HEAD) > $STATUS_DEPLOYED
     echo "Files synced..."
+    if [[ ! -z "${POST_SYNC_COMMANDS}" ]]
+    then
+      echo "Running Post Sync Commands..."
+      $POST_SYNC_COMMANDS
+    else
+      echo "No Post Sync Commands..."
+    fi
   else
     echo "Skipping build..."
   fi
