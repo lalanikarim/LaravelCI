@@ -48,6 +48,9 @@ runbuild() {
   else
     echo "Skipping build..."
   fi
+}
+
+syncfiles() {
   echo "Syncing files..."
   rsync -a --exclude='.git' . $GIT_DEST && \
     echo -n $(git rev-parse HEAD) > $STATUS_DEPLOYED
@@ -86,6 +89,7 @@ echo "Switching to remote branch..."
 git switch $GIT_BRANCH
 
 runbuild
+syncfiles
 while true
 do
   git fetch origin
@@ -96,6 +100,7 @@ do
   else
     echo "Remote not updated. Skipping..."
   fi
+  syncfiles
   echo "sleeping..."
   sleep $SLEEP_DURATION
 done

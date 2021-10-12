@@ -1,5 +1,5 @@
 FROM docker.io/composer:2.1.6
-RUN apk add git openssh rsync npm
+RUN apk add git rsync npm
 RUN docker-php-ext-install exif gd pcntl xml
 RUN deluser xfs
 RUN addgroup -g 33 nonroot
