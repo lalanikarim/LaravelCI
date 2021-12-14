@@ -24,8 +24,8 @@ runbuild() {
     then 
       echo "Running Composer..."
       [ $# == 1 ] && $1 && composer dumpautoload
-      composer install
-      composer update
+      composer.phar install
+      composer.phar update
       if [[ ! -z "${POST_COMPOSER_COMMANDS}" ]]
       then
         echo "Running Post Composer Commands..."

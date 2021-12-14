@@ -1,0 +1,14 @@
+FROM docker.io/php:8.1-alpine3.15
+RUN apk add git openssh rsync npm bash
+RUN apk add composer libxml2-dev
+RUN docker-php-ext-install dom
+RUN deluser xfs
+RUN addgroup -g 33 nonroot
+RUN adduser --home /home/nonroot --uid 33 -G nonroot \
+    --shell /bin/bash -k /dev/null -H -D nonroot
+RUN mkdir -p /home/nonroot 
+RUN chown -R nonroot:nonroot /home/nonroot 
+USER nonroot
+WORKDIR /home/nonroot
+COPY build.sh .
+ENTRYPOINT . ./build.sh
