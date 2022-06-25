@@ -90,7 +90,7 @@ git switch $GIT_BRANCH
 
 runbuild
 syncfiles
-while true
+while $LIVE_UPDATE
 do
   git fetch origin
   if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]
