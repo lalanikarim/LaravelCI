@@ -1,0 +1,19 @@
+FROM docker.io/php:8-alpine3.14
+RUN apk add git openssh rsync npm bash linux-pam shadow
+RUN apk add composer postgresql-dev mysql-dev
+RUN apk add libsodium libsodium-dev zlib-dev libpng libpng-dev libzip libzip-dev
+RUN apk add make autoconf g++ gcc librdkafka-dev
+RUN pecl install rdkafka
+RUN echo "extension=rdkafka.so" > /usr/local/etc/php/conf.d/kafka.ini
+RUN docker-php-ext-install exif pcntl gd zip pdo pdo_pgsql pdo_mysql
+RUN docker-php-ext-install sockets
+RUN deluser xfs
+RUN addgroup -g 33 nonroot
+RUN adduser --home /home/nonroot --uid 33 -G nonroot \
+    --shell /bin/bash -k /dev/null -H -D nonroot
+RUN mkdir -p /home/nonroot 
+RUN chown -R nonroot:nonroot /home/nonroot 
+USER nonroot
+WORKDIR /home/nonroot
+COPY build.sh .
+ENTRYPOINT . ./build.sh

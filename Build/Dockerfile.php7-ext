@@ -1,0 +1,15 @@
+FROM docker.io/php:7-alpine3.14
+RUN apk add git openssh rsync npm bash
+RUN apk add composer
+RUN apk add libsodium libsodium-dev zlib-dev libpng libpng-dev libzip libzip-dev
+RUN docker-php-ext-install exif pcntl gd zip
+RUN deluser xfs
+RUN addgroup -g 33 nonroot
+RUN adduser --home /home/nonroot --uid 33 -G nonroot \
+    --shell /bin/bash -k /dev/null -H -D nonroot
+RUN mkdir -p /home/nonroot 
+RUN chown -R nonroot:nonroot /home/nonroot 
+USER nonroot
+WORKDIR /home/nonroot
+COPY build.sh .
+ENTRYPOINT . ./build.sh
